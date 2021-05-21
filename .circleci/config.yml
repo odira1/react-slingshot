@@ -39,7 +39,7 @@ jobs:
 workflow:
   pipeline_exercise_workflow:
     jobs:
-      - build:
+      - build
       - test:
           requires: build
       - analyze:
