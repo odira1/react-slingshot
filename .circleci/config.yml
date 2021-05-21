@@ -1,0 +1,44 @@
+version: 2.0
+
+defaults: &defaults
+  docker:
+    - image: circleci/node:13.8.0
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - save_cache:
+          paths:
+            - "./node-modules"
+          key: "npm-packages"
+      - run: npm run build
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm run test
+
+  analyze:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm audit
+
+
+workflow:
+  pipeline_exercise_workflow:
+    jobs:
+      - build:
+      - test:
+          requires: build
+      - analyze:
+          requires: test
